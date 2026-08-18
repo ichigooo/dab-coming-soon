@@ -3,13 +3,15 @@ const PRODUCTS = Object.freeze({
     name: "Block 02",
     amount: 3000,
     edgeDepthCount: 1,
-    edgeDepths: Object.freeze([12, 15, 18, 20, 22, 25])
+    edgeDepths: Object.freeze([12, 15, 18, 20, 22, 25]),
+    colors: Object.freeze(["Clay Pink", "Lavender", "Soft Lemon", "Charcoal"])
   }),
   "hold-type-02": Object.freeze({
     name: "Block 01",
     amount: 2500,
     edgeDepthCount: 2,
-    edgeDepths: Object.freeze([12, 15, 18, 20, 22, 25])
+    edgeDepths: Object.freeze([12, 15, 18, 20, 22, 25]),
+    colors: Object.freeze(["Clay Pink", "Lavender", "Soft Lemon", "Charcoal"])
   })
 });
 
@@ -36,6 +38,29 @@ function sendJson(response, status, body) {
   response.status(status).setHeader("Content-Type", "application/json");
   response.setHeader("Cache-Control", "no-store");
   response.json(body);
+}
+
+function colorValue(color) {
+  return color.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+}
+
+function addColorField(checkoutData, index, key, label, colors, selectedColor) {
+  checkoutData.set(`custom_fields[${index}][key]`, key);
+  checkoutData.set(`custom_fields[${index}][label][type]`, "custom");
+  checkoutData.set(`custom_fields[${index}][label][custom]`, label);
+  checkoutData.set(`custom_fields[${index}][type]`, "dropdown");
+  checkoutData.set(`custom_fields[${index}][optional]`, "false");
+  checkoutData.set(`custom_fields[${index}][dropdown][default_value]`, colorValue(selectedColor));
+  colors.forEach((color, optionIndex) => {
+    checkoutData.set(
+      `custom_fields[${index}][dropdown][options][${optionIndex}][label]`,
+      color
+    );
+    checkoutData.set(
+      `custom_fields[${index}][dropdown][options][${optionIndex}][value]`,
+      colorValue(color)
+    );
+  });
 }
 
 module.exports = async function handler(request, response) {
@@ -66,6 +91,12 @@ module.exports = async function handler(request, response) {
     return sendJson(response, 400, { error: "Select a valid edge depth." });
   }
 
+  const bodyColor = String(request.body?.bodyColor || "");
+  const accentColor = String(request.body?.accentColor || "");
+  if (!product.colors.includes(bodyColor) || !product.colors.includes(accentColor)) {
+    return sendJson(response, 400, { error: "Select valid primary and accent colors." });
+  }
+
   const edgeDepthLabel = edgeDepths.map((depth) => `${depth} mm`).join(" / ");
   const referenceId = `${request.body.variantId}-depth-${edgeDepths.join("mm-depth-")}mm`;
   const origin = getSiteOrigin(request);
@@ -78,20 +109,26 @@ module.exports = async function handler(request, response) {
       client_reference_id: referenceId,
       "line_items[0][price_data][currency]": "usd",
       "line_items[0][price_data][unit_amount]": String(product.amount),
-      "line_items[0][price_data][product_data][name]": `${product.name} — Edge depth: ${edgeDepthLabel}`,
+      "line_items[0][price_data][product_data][name]": `${product.name} — Edge: ${edgeDepthLabel} — Primary: ${bodyColor} — Accent: ${accentColor}`,
       "line_items[0][quantity]": "1",
       "metadata[variant_id]": request.body.variantId,
       "metadata[product_name]": product.name,
       "metadata[edge_depths]": edgeDepthLabel,
+      "metadata[primary_color]": bodyColor,
+      "metadata[accent_color]": accentColor,
       "payment_intent_data[metadata][variant_id]": request.body.variantId,
       "payment_intent_data[metadata][product_name]": product.name,
       "payment_intent_data[metadata][edge_depths]": edgeDepthLabel,
+      "payment_intent_data[metadata][primary_color]": bodyColor,
+      "payment_intent_data[metadata][accent_color]": accentColor,
       "shipping_address_collection[allowed_countries][0]": "US",
       "shipping_options[0][shipping_rate_data][type]": "fixed_amount",
       "shipping_options[0][shipping_rate_data][fixed_amount][amount]": "595",
       "shipping_options[0][shipping_rate_data][fixed_amount][currency]": "usd",
       "shipping_options[0][shipping_rate_data][display_name]": "Standard shipping"
     });
+    addColorField(checkoutData, 0, "primarycolor", "Primary color", product.colors, bodyColor);
+    addColorField(checkoutData, 1, "accentcolor", "Accent color", product.colors, accentColor);
     const stripeResponse = await fetch("https://api.stripe.com/v1/checkout/sessions", {
       method: "POST",
       headers: {

@@ -83,6 +83,16 @@ if (stage && canvas) {
 
   const selectedBody = () => bodyInputs.find((input) => input.checked)?.value || blockColor;
   const selectedAccent = () => accentInputs.find((input) => input.checked)?.value || "#ffffff";
+  const selectedColorName = (inputs) =>
+    inputs.find((input) => input.checked)?.closest("label")?.title || "";
+  const dispatchColorSelection = () => {
+    window.dispatchEvent(new CustomEvent("dab:color-change", {
+      detail: {
+        bodyColor: selectedColorName(bodyInputs),
+        accentColor: selectedColorName(accentInputs)
+      }
+    }));
+  };
   const bodyColor = new THREE.Color(selectedBody());
   const accentColor = new THREE.Color(selectedAccent());
   const accentDisplayColor = new THREE.Vector3();
@@ -425,6 +435,7 @@ if (stage && canvas) {
       bodyCurrent?.style.setProperty("--swatch-color", input.value);
       if (bodyName) bodyName.textContent = input.closest("label")?.title || "Selected color";
       updateVertexColors();
+      dispatchColorSelection();
       if (bodyPalette) bodyPalette.hidden = true;
       bodyToggle?.setAttribute("aria-expanded", "false");
     });
@@ -438,6 +449,7 @@ if (stage && canvas) {
       accentCurrent?.style.setProperty("--swatch-color", input.value);
       if (accentName) accentName.textContent = input.closest("label")?.title || "Selected color";
       updateVertexColors();
+      dispatchColorSelection();
       if (accentPalette) accentPalette.hidden = true;
       accentToggle?.setAttribute("aria-expanded", "false");
     });

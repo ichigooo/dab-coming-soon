@@ -80,7 +80,7 @@ function initializeProductMedia(product) {
     modelStage.hidden = false;
     if (!modelLoaded) {
       modelLoaded = true;
-      import("/assets/js/model-viewer.js?v=20260818-8");
+      import("/assets/js/model-viewer.js?v=20260818-9");
     } else {
       window.dispatchEvent(new Event("resize"));
     }
@@ -121,6 +121,8 @@ function renderVariants(product, checkoutButton, salesEnabled) {
   ];
   const checkoutLabel = checkoutButton.querySelector("span");
   let activeVariant = null;
+  let selectedBodyColor = "";
+  let selectedAccentColor = "";
   let checkoutPending = false;
 
   productPage?.classList.toggle("sales-disabled", !salesEnabled);
@@ -140,6 +142,8 @@ function renderVariants(product, checkoutButton, salesEnabled) {
 
   function setVariantState(variant) {
     activeVariant = variant;
+    selectedBodyColor = variant.defaultBodyColor || "";
+    selectedAccentColor = variant.defaultAccentColor || "";
     setConfiguratorSize(variant);
     if (pricingNote) pricingNote.hidden = !variant.requiresApproval;
     const edgeDepths = Array.isArray(variant.edgeDepths) ? variant.edgeDepths : [];
@@ -176,6 +180,11 @@ function renderVariants(product, checkoutButton, salesEnabled) {
     select?.addEventListener("change", updateCheckout);
   });
 
+  window.addEventListener("dab:color-change", (event) => {
+    if (event.detail?.bodyColor) selectedBodyColor = event.detail.bodyColor;
+    if (event.detail?.accentColor) selectedAccentColor = event.detail.accentColor;
+  });
+
   checkoutButton.addEventListener("click", async (event) => {
     if (!salesEnabled || !activeVariant || checkoutPending) return;
 
@@ -192,7 +201,12 @@ function renderVariants(product, checkoutButton, salesEnabled) {
       const checkoutResponse = await fetch("/api/create-checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ variantId: activeVariant.id, edgeDepths })
+        body: JSON.stringify({
+          variantId: activeVariant.id,
+          edgeDepths,
+          bodyColor: selectedBodyColor,
+          accentColor: selectedAccentColor
+        })
       });
       const checkout = await checkoutResponse.json();
 
