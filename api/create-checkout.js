@@ -41,7 +41,7 @@ function sendJson(response, status, body) {
 }
 
 function colorValue(color) {
-  return color.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  return color.toLowerCase().replace(/[^a-z0-9]/g, "");
 }
 
 function addColorField(checkoutData, index, key, label, colors, selectedColor) {
