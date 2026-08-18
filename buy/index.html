@@ -7,7 +7,7 @@
   <meta name="description" content="Dab Block — first drop." />
   <title>DAB — Block</title>
   <link rel="stylesheet" href="/assets/css/styles.css?v=20260718-28" />
-  <link rel="stylesheet" href="/assets/css/buy.css?v=20260718-29" />
+  <link rel="stylesheet" href="/assets/css/buy.css?v=20260818-9" />
 </head>
 <body class="store-page">
   <main class="store-shell">
@@ -19,9 +19,23 @@
 
     <section class="buy-layout" id="product-page" hidden aria-labelledby="product-name">
       <div class="buy-media">
-        <div class="model-stage" id="model-stage" aria-label="Interactive 3D model of Dab Block">
+        <section class="product-gallery" id="product-gallery" aria-label="Dab Block product photos">
+          <div class="gallery-frame">
+            <img id="gallery-image" src="/assets/images/dab-block-02-chalk.jpg" alt="Clay Pink and Charcoal Dab Block 02 on a chalked gym floor" width="1600" height="1705" />
+          </div>
+          <button class="media-mode-button media-mode-button--model" id="view-model" type="button">View 3D + customize</button>
+          <div class="gallery-controls">
+            <div class="gallery-navigation" aria-label="Product photo navigation">
+              <button id="gallery-previous" type="button" aria-label="Previous photo">←</button>
+              <span id="gallery-position" aria-live="polite">1 / 2</span>
+              <button id="gallery-next" type="button" aria-label="Next photo">→</button>
+            </div>
+          </div>
+        </section>
+        <div class="model-stage" id="model-stage" aria-label="Interactive 3D model of Dab Block" hidden>
           <canvas id="model-canvas"></canvas>
           <div class="model-status" id="model-status" role="status" aria-live="polite">Loading model</div>
+          <button class="media-mode-button media-mode-button--photos" id="view-photos" type="button">← Back to photos</button>
           <div class="model-tools">
             <section class="model-configurator" id="model-configurator" aria-label="Product finish editor">
               <div class="configurator-heading">
@@ -70,6 +84,10 @@
                     <label class="filament-swatch" title="Gold"><input type="radio" name="accent-color" value="#D49B42" /><span style="--swatch-color: #D49B42"></span><span class="sr-only">gold</span></label>
                     <label class="filament-swatch" title="Bronze"><input type="radio" name="accent-color" value="#745535" /><span style="--swatch-color: #745535"></span><span class="sr-only">bronze</span></label>
                     <label class="filament-swatch" title="Copper"><input type="radio" name="accent-color" value="#A94A2C" /><span style="--swatch-color: #A94A2C"></span><span class="sr-only">copper</span></label>
+                    <label class="filament-swatch" title="Clay Pink"><input type="radio" name="accent-color" value="#AD7889" /><span style="--swatch-color: #AD7889"></span><span class="sr-only">clay pink</span></label>
+                    <label class="filament-swatch" title="Lavender"><input type="radio" name="accent-color" value="#C9C9E7" /><span style="--swatch-color: #C9C9E7"></span><span class="sr-only">lavender</span></label>
+                    <label class="filament-swatch" title="Soft Lemon"><input type="radio" name="accent-color" value="#FFE09A" /><span style="--swatch-color: #FFE09A"></span><span class="sr-only">soft lemon</span></label>
+                    <label class="filament-swatch" title="Charcoal"><input type="radio" name="accent-color" value="#292929" /><span style="--swatch-color: #292929"></span><span class="sr-only">charcoal</span></label>
                       </span>
                     </span>
                   </span>
@@ -84,14 +102,13 @@
             </div>
             <label class="spin-speed" for="spin-speed">
               <span>Spin</span>
-              <input id="spin-speed" type="range" min="0" max="100" step="1" value="50" aria-label="Spin speed" />
+              <input id="spin-speed" type="range" min="0" max="100" step="1" value="0" aria-label="Spin speed" />
             </label>
           </div>
         </div>
       </div>
 
       <div class="buy-details">
-        <p class="buy-eyebrow" id="product-eyebrow">Limited first run</p>
         <div class="buy-title-row">
           <h1 id="product-name">Dab Block</h1>
         </div>
@@ -100,9 +117,21 @@
           <div class="variant-options" id="variant-options"></div>
           <p class="variant-pricing-note" id="variant-pricing-note" hidden>Custom pricing is confirmed after your customization details are reviewed and approved.</p>
         </fieldset>
+        <fieldset class="edge-depth-picker" id="edge-depth-picker" hidden>
+          <legend class="sr-only">Choose edge depths</legend>
+          <div class="edge-depth-options">
+            <label for="edge-depth-1">
+              <span>Edge depth 1</span>
+              <select id="edge-depth-1" name="edge-depth-1"></select>
+            </label>
+            <label for="edge-depth-2">
+              <span>Edge depth 2</span>
+              <select id="edge-depth-2" name="edge-depth-2"></select>
+            </label>
+          </div>
+        </fieldset>
         <dl class="product-specs" aria-label="Customization and product details">
           <div><dt>Finish</dt><dd>Choose from available colors</dd></div>
-          <div><dt>Edge depth</dt><dd>Custom sizes available</dd></div>
           <div><dt>Rope</dt><dd>5 mm black nylon accessory cord</dd></div>
           <div><dt>Estimated max static load</dt><dd>100 kg / 220 lb*</dd></div>
         </dl>
@@ -133,8 +162,8 @@
     </footer>
   </main>
 
-  <script src="/assets/js/store-config.js?v=20260720-1"></script>
-  <script src="/assets/js/buy.js?v=20260720-1" defer></script>
+  <script src="/assets/js/store-config.js?v=20260818-26"></script>
+  <script src="/assets/js/buy.js?v=20260818-15" defer></script>
   <script type="importmap">
     {
       "imports": {
