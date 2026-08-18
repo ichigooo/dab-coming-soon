@@ -484,6 +484,20 @@ if (stage && canvas) {
     if (detail.modelUrl) loadModel(detail.modelUrl);
   });
 
+  window.addEventListener("dab:checkout-color-change", (event) => {
+    const detail = event.detail || {};
+    const setColor = (inputs, colorName) => {
+      if (!colorName) return;
+      const input = inputs.find((candidate) => candidate.closest("label")?.title === colorName);
+      if (input && !input.disabled) {
+        input.checked = true;
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+    };
+    setColor(bodyInputs, detail.bodyColor);
+    setColor(accentInputs, detail.accentColor);
+  });
+
   const selectedVariantId = document.querySelector('input[name="hold-type"]:checked')?.value;
   const selectedVariant = window.DAB_STORE?.product?.variants
     ?.find((variant) => variant.id === selectedVariantId);

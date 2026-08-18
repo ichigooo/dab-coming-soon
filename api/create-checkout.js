@@ -40,29 +40,6 @@ function sendJson(response, status, body) {
   response.json(body);
 }
 
-function colorValue(color) {
-  return color.toLowerCase().replace(/[^a-z0-9]/g, "");
-}
-
-function addColorField(checkoutData, index, key, label, colors, selectedColor) {
-  checkoutData.set(`custom_fields[${index}][key]`, key);
-  checkoutData.set(`custom_fields[${index}][label][type]`, "custom");
-  checkoutData.set(`custom_fields[${index}][label][custom]`, label);
-  checkoutData.set(`custom_fields[${index}][type]`, "dropdown");
-  checkoutData.set(`custom_fields[${index}][optional]`, "false");
-  checkoutData.set(`custom_fields[${index}][dropdown][default_value]`, colorValue(selectedColor));
-  colors.forEach((color, optionIndex) => {
-    checkoutData.set(
-      `custom_fields[${index}][dropdown][options][${optionIndex}][label]`,
-      color
-    );
-    checkoutData.set(
-      `custom_fields[${index}][dropdown][options][${optionIndex}][value]`,
-      colorValue(color)
-    );
-  });
-}
-
 module.exports = async function handler(request, response) {
   if (request.method !== "POST") {
     response.setHeader("Allow", "POST");
@@ -127,8 +104,6 @@ module.exports = async function handler(request, response) {
       "shipping_options[0][shipping_rate_data][fixed_amount][currency]": "usd",
       "shipping_options[0][shipping_rate_data][display_name]": "Standard shipping"
     });
-    addColorField(checkoutData, 0, "primarycolor", "Primary color", product.colors, bodyColor);
-    addColorField(checkoutData, 1, "accentcolor", "Accent color", product.colors, accentColor);
     const stripeResponse = await fetch("https://api.stripe.com/v1/checkout/sessions", {
       method: "POST",
       headers: {

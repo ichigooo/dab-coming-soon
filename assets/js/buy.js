@@ -80,7 +80,7 @@ function initializeProductMedia(product) {
     modelStage.hidden = false;
     if (!modelLoaded) {
       modelLoaded = true;
-      import("/assets/js/model-viewer.js?v=20260818-9");
+      import("/assets/js/model-viewer.js?v=20260818-10");
     } else {
       window.dispatchEvent(new Event("resize"));
     }
@@ -119,6 +119,9 @@ function renderVariants(product, checkoutButton, salesEnabled) {
     document.querySelector("#edge-depth-1"),
     document.querySelector("#edge-depth-2")
   ];
+  const colorPicker = document.querySelector("#product-color-picker");
+  const primaryColorSelect = document.querySelector("#primary-color-select");
+  const accentColorSelect = document.querySelector("#accent-color-select");
   const checkoutLabel = checkoutButton.querySelector("span");
   let activeVariant = null;
   let selectedBodyColor = "";
@@ -167,6 +170,17 @@ function renderVariants(product, checkoutButton, salesEnabled) {
       }));
       select.disabled = !isActive;
     });
+    const bodyColors = Array.isArray(variant.bodyColors) ? variant.bodyColors : [];
+    const accentColors = Array.isArray(variant.accentColors) ? variant.accentColors : [];
+    if (colorPicker) colorPicker.hidden = !bodyColors.length || !accentColors.length;
+    if (primaryColorSelect) {
+      primaryColorSelect.replaceChildren(...bodyColors.map((color) => new Option(color, color)));
+      primaryColorSelect.value = selectedBodyColor;
+    }
+    if (accentColorSelect) {
+      accentColorSelect.replaceChildren(...accentColors.map((color) => new Option(color, color)));
+      accentColorSelect.value = selectedAccentColor;
+    }
     updateCheckout();
     if (checkoutLabel) {
       checkoutLabel.textContent = salesEnabled
@@ -181,8 +195,28 @@ function renderVariants(product, checkoutButton, salesEnabled) {
   });
 
   window.addEventListener("dab:color-change", (event) => {
-    if (event.detail?.bodyColor) selectedBodyColor = event.detail.bodyColor;
-    if (event.detail?.accentColor) selectedAccentColor = event.detail.accentColor;
+    if (event.detail?.bodyColor) {
+      selectedBodyColor = event.detail.bodyColor;
+      if (primaryColorSelect) primaryColorSelect.value = selectedBodyColor;
+    }
+    if (event.detail?.accentColor) {
+      selectedAccentColor = event.detail.accentColor;
+      if (accentColorSelect) accentColorSelect.value = selectedAccentColor;
+    }
+  });
+
+  primaryColorSelect?.addEventListener("change", () => {
+    selectedBodyColor = primaryColorSelect.value;
+    window.dispatchEvent(new CustomEvent("dab:checkout-color-change", {
+      detail: { bodyColor: selectedBodyColor }
+    }));
+  });
+
+  accentColorSelect?.addEventListener("change", () => {
+    selectedAccentColor = accentColorSelect.value;
+    window.dispatchEvent(new CustomEvent("dab:checkout-color-change", {
+      detail: { accentColor: selectedAccentColor }
+    }));
   });
 
   checkoutButton.addEventListener("click", async (event) => {
