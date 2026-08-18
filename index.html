@@ -19,9 +19,23 @@
 
     <section class="buy-layout" id="product-page" hidden aria-labelledby="product-name">
       <div class="buy-media">
-        <div class="model-stage" id="model-stage" aria-label="Interactive 3D model of Dab Block">
+        <section class="product-gallery" id="product-gallery" aria-label="Dab Block product photos">
+          <div class="gallery-frame">
+            <img id="gallery-image" src="/assets/images/dab-block-02-chalk.jpg" alt="Clay Pink and Charcoal Dab Block 02 on a chalked gym floor" width="1600" height="1705" />
+          </div>
+          <button class="media-mode-button media-mode-button--model" id="view-model" type="button">View 3D + customize</button>
+          <div class="gallery-controls">
+            <div class="gallery-navigation" aria-label="Product photo navigation">
+              <button id="gallery-previous" type="button" aria-label="Previous photo">←</button>
+              <span id="gallery-position" aria-live="polite">1 / 2</span>
+              <button id="gallery-next" type="button" aria-label="Next photo">→</button>
+            </div>
+          </div>
+        </section>
+        <div class="model-stage" id="model-stage" aria-label="Interactive 3D model of Dab Block" hidden>
           <canvas id="model-canvas"></canvas>
           <div class="model-status" id="model-status" role="status" aria-live="polite">Loading model</div>
+          <button class="media-mode-button media-mode-button--photos" id="view-photos" type="button">← Back to photos</button>
           <div class="model-tools">
             <section class="model-configurator" id="model-configurator" aria-label="Product finish editor">
               <div class="configurator-heading">
