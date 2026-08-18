@@ -95,7 +95,6 @@ if (stage && canvas) {
   };
   const bodyColor = new THREE.Color(selectedBody());
   const accentColor = new THREE.Color(selectedAccent());
-  const accentDisplayColor = new THREE.Vector3();
 
   function setAvailableColors(inputs, availableNames, defaultName) {
     const restricted = Array.isArray(availableNames) && availableNames.length > 0;
@@ -117,45 +116,11 @@ if (stage && canvas) {
     }
   }
 
-  function updateAccentDisplayColor(hexColor) {
-    const value = Number.parseInt(hexColor.slice(1), 16);
-    accentDisplayColor.set(
-      ((value >> 16) & 255) / 255,
-      ((value >> 8) & 255) / 255,
-      (value & 255) / 255
-    );
-  }
-
-  updateAccentDisplayColor(selectedAccent());
-
   const material = new THREE.MeshStandardMaterial({
     vertexColors: true,
     roughness: 0.68,
     metalness: 0.02
   });
-  material.onBeforeCompile = (shader) => {
-    shader.uniforms.dabAccentLinear = { value: accentColor };
-    shader.uniforms.dabAccentDisplay = { value: accentDisplayColor };
-    shader.fragmentShader = shader.fragmentShader.replace(
-      "void main() {",
-      `
-        uniform vec3 dabAccentLinear;
-        uniform vec3 dabAccentDisplay;
-        void main() {
-      `
-    );
-    shader.fragmentShader = shader.fragmentShader.replace(
-      "#include <dithering_fragment>",
-      `
-        float dabIsAccent = 1.0 - step(0.001, distance(diffuseColor.rgb, dabAccentLinear));
-        gl_FragColor.rgb = mix(gl_FragColor.rgb, dabAccentDisplay, dabIsAccent);
-        float dabPureWhite = step(0.999, min(diffuseColor.r, min(diffuseColor.g, diffuseColor.b)));
-        gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(1.0), dabPureWhite);
-        #include <dithering_fragment>
-      `
-    );
-  };
-  material.customProgramCacheKey = () => "dab-pure-white-v1";
 
   let model = null;
   let accentMask = null;
@@ -456,7 +421,6 @@ if (stage && canvas) {
     input.addEventListener("change", () => {
       if (!input.checked) return;
       accentColor.set(input.value);
-      updateAccentDisplayColor(input.value);
       accentCurrent?.style.setProperty("--swatch-color", input.value);
       if (accentName) accentName.textContent = input.closest("label")?.title || "Selected color";
       updateVertexColors();

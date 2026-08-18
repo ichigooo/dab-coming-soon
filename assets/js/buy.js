@@ -87,7 +87,7 @@ function initializeProductMedia(product) {
     modelStage.hidden = false;
     if (!modelLoaded) {
       modelLoaded = true;
-      import("/assets/js/model-viewer.js?v=20260818-11");
+      import("/assets/js/model-viewer.js?v=20260818-12");
     } else {
       window.dispatchEvent(new Event("resize"));
     }
