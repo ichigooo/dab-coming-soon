@@ -1,14 +1,12 @@
 const PRODUCTS = Object.freeze({
   "hold-type-01": Object.freeze({
-    name: "DAB BLOCK 02",
-    productId: "prod_UtL3irSbrsztcS",
+    name: "Block 02",
     amount: 3000,
     edgeDepthCount: 1,
     edgeDepths: Object.freeze([12, 15, 18, 20, 22, 25])
   }),
   "hold-type-02": Object.freeze({
-    name: "DAB BLOCK 01",
-    productId: "prod_UtL4F109h915uQ",
+    name: "Block 01",
     amount: 2500,
     edgeDepthCount: 2,
     edgeDepths: Object.freeze([12, 15, 18, 20, 22, 25])
@@ -38,34 +36,6 @@ function sendJson(response, status, body) {
   response.status(status).setHeader("Content-Type", "application/json");
   response.setHeader("Cache-Control", "no-store");
   response.json(body);
-}
-
-async function findPriceId(secretKey, product) {
-  const query = new URLSearchParams({
-    product: product.productId,
-    active: "true",
-    type: "one_time",
-    currency: "usd",
-    limit: "100"
-  });
-  const stripeResponse = await fetch(`https://api.stripe.com/v1/prices?${query}`, {
-    headers: { Authorization: `Bearer ${secretKey}` }
-  });
-  const stripeBody = await stripeResponse.json();
-
-  if (!stripeResponse.ok) {
-    throw new Error(stripeBody?.error?.message || "Stripe could not load the product price.");
-  }
-
-  const price = stripeBody.data?.find((candidate) =>
-    candidate.unit_amount === product.amount && candidate.currency === "usd"
-  );
-
-  if (!price?.id) {
-    throw new Error(`No active USD price was found for ${product.name}.`);
-  }
-
-  return price.id;
 }
 
 module.exports = async function handler(request, response) {
@@ -101,13 +71,14 @@ module.exports = async function handler(request, response) {
   const origin = getSiteOrigin(request);
 
   try {
-    const priceId = await findPriceId(secretKey, product);
     const checkoutData = new URLSearchParams({
       mode: "payment",
       success_url: `${origin}/thank-you/?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/buy/`,
       client_reference_id: referenceId,
-      "line_items[0][price]": priceId,
+      "line_items[0][price_data][currency]": "usd",
+      "line_items[0][price_data][unit_amount]": String(product.amount),
+      "line_items[0][price_data][product_data][name]": `${product.name} — Edge depth: ${edgeDepthLabel}`,
       "line_items[0][quantity]": "1",
       "metadata[variant_id]": request.body.variantId,
       "metadata[product_name]": product.name,
@@ -115,7 +86,6 @@ module.exports = async function handler(request, response) {
       "payment_intent_data[metadata][variant_id]": request.body.variantId,
       "payment_intent_data[metadata][product_name]": product.name,
       "payment_intent_data[metadata][edge_depths]": edgeDepthLabel,
-      "custom_text[submit][message]": `Selected edge depth: ${edgeDepthLabel}`,
       "shipping_address_collection[allowed_countries][0]": "US",
       "shipping_options[0][shipping_rate_data][type]": "fixed_amount",
       "shipping_options[0][shipping_rate_data][fixed_amount][amount]": "595",
