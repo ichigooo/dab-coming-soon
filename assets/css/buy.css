@@ -212,13 +212,24 @@ body {
 }
 
 .buy-details {
+  --details-gutter: 32px;
   position: relative;
   min-width: 0;
   display: flex;
   flex-direction: column;
+  align-items: stretch;
   justify-content: flex-start;
-  padding: 32px;
+  padding: var(--details-gutter);
   border-left: 1px solid var(--line);
+  text-align: left;
+}
+
+.buy-details > .buy-title-row,
+.buy-details > fieldset,
+.buy-details > .product-specs,
+.buy-details > .load-disclaimer {
+  width: 100%;
+  max-width: none;
 }
 
 .buy-eyebrow,
@@ -579,9 +590,9 @@ body {
 
   .buy-purchase {
     position: absolute;
-    right: var(--pad);
+    right: var(--details-gutter);
     bottom: 0;
-    left: var(--pad);
+    left: var(--details-gutter);
     width: auto;
     margin: 0;
     padding: 0;
@@ -590,7 +601,7 @@ body {
 
 @media (min-width: 821px) and (max-width: 1100px) {
   .buy-details {
-    padding: 28px;
+    --details-gutter: 28px;
   }
 
   .variant-options {
@@ -814,7 +825,7 @@ body {
   }
 
   .buy-details {
-    padding: 20px;
+    --details-gutter: 20px;
   }
 
   .buy-title-row {

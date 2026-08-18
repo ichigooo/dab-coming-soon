@@ -10,7 +10,7 @@ window.DAB_STORE = Object.freeze({
       Object.freeze({
         id: "hold-type-01",
         name: "DAB BLOCK 02",
-        description: "Ergonomic Block",
+        description: "Uneven Edge Block",
         price: "$30.00",
         modelUrl: "/assets/models/DAB-BLOCK-LARGE.3mf?v=20260818-preview-2",
         checkoutUrl: "https://checkout.dabclimbing.com/b/7sY3cx40RdkR3sCbYZ4wM02",
@@ -35,7 +35,7 @@ window.DAB_STORE = Object.freeze({
       Object.freeze({
         id: "hold-type-02",
         name: "DAB BLOCK 01",
-        description: "Custom Flat Edge",
+        description: "Flat Edge Block",
         price: "$25.00",
         modelUrl: "/assets/models/DAB-BLOCK-01.3mf?v=20260818-preview-2",
         checkoutUrl: "https://checkout.dabclimbing.com/b/6oU5kF2WN3Khe7gaUV4wM03",
