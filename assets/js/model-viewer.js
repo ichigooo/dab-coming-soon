@@ -400,10 +400,21 @@ if (stage && canvas) {
 
       if (model) {
         scene.remove(model);
+        model.children.forEach((child) => {
+          child.geometry?.dispose();
+          child.material?.dispose();
+        });
         model.geometry.dispose();
       }
 
       model = new THREE.Mesh(geometry, material);
+      const edgeGeometry = new THREE.EdgesGeometry(geometry, 38);
+      const edgeMaterial = new THREE.LineBasicMaterial({
+        color: 0x111111,
+        transparent: true,
+        opacity: 0.2
+      });
+      model.add(new THREE.LineSegments(edgeGeometry, edgeMaterial));
       triangleCount = nextTriangleCount;
       accentMask = nextAccentMask;
       fitModel(model);
@@ -506,6 +517,18 @@ if (stage && canvas) {
     setAvailableColors(bodyInputs, selectedVariant.bodyColors, selectedVariant.defaultBodyColor);
     setAvailableColors(accentInputs, selectedVariant.accentColors, selectedVariant.defaultAccentColor);
   }
+
+  const initialWebsiteColors = [
+    [bodyInputs, document.querySelector("#primary-color-select")?.value],
+    [accentInputs, document.querySelector("#accent-color-select")?.value]
+  ];
+  initialWebsiteColors.forEach(([inputs, colorName]) => {
+    const input = inputs.find((candidate) => candidate.closest("label")?.title === colorName);
+    if (input && !input.disabled) {
+      input.checked = true;
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+  });
 
   resize();
   window.addEventListener("resize", resize);

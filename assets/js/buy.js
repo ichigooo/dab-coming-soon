@@ -61,6 +61,7 @@ function initializeProductMedia(product) {
   const previous = document.querySelector("#gallery-previous");
   const next = document.querySelector("#gallery-next");
   const viewModel = document.querySelector("#view-model");
+  const viewColorsIn3d = document.querySelector("#view-colors-3d");
   const viewPhotos = document.querySelector("#view-photos");
   const modelStage = document.querySelector("#model-stage");
   const variants = Array.isArray(product?.variants) ? product.variants : [];
@@ -86,7 +87,7 @@ function initializeProductMedia(product) {
     modelStage.hidden = false;
     if (!modelLoaded) {
       modelLoaded = true;
-      import("/assets/js/model-viewer.js?v=20260818-10");
+      import("/assets/js/model-viewer.js?v=20260818-11");
     } else {
       window.dispatchEvent(new Event("resize"));
     }
@@ -103,6 +104,7 @@ function initializeProductMedia(product) {
   previous?.addEventListener("click", () => showPhoto(activePhoto - 1));
   next?.addEventListener("click", () => showPhoto(activePhoto + 1));
   viewModel?.addEventListener("click", showModel);
+  viewColorsIn3d?.addEventListener("click", showModel);
   viewPhotos?.addEventListener("click", showPhotos);
   gallery?.addEventListener("keydown", (event) => {
     if (event.key === "ArrowLeft") showPhoto(activePhoto - 1);
@@ -147,6 +149,12 @@ function renderVariants(product, checkoutButton, salesEnabled) {
       "--selected-color",
       productColorValues[selectedAccentColor] || "transparent"
     );
+  }
+
+  function syncColorControls() {
+    if (primaryColorSelect) primaryColorSelect.value = selectedBodyColor;
+    if (accentColorSelect) accentColorSelect.value = selectedAccentColor;
+    updateColorSwatches();
   }
 
   function updateCheckout() {
@@ -200,7 +208,7 @@ function renderVariants(product, checkoutButton, salesEnabled) {
       accentColorSelect.replaceChildren(...accentColors.map((color) => new Option(color, color)));
       accentColorSelect.value = selectedAccentColor;
     }
-    updateColorSwatches();
+    syncColorControls();
     updateCheckout();
     if (checkoutLabel) {
       checkoutLabel.textContent = salesEnabled
@@ -217,28 +225,26 @@ function renderVariants(product, checkoutButton, salesEnabled) {
   window.addEventListener("dab:color-change", (event) => {
     if (event.detail?.bodyColor) {
       selectedBodyColor = event.detail.bodyColor;
-      if (primaryColorSelect) primaryColorSelect.value = selectedBodyColor;
     }
     if (event.detail?.accentColor) {
       selectedAccentColor = event.detail.accentColor;
-      if (accentColorSelect) accentColorSelect.value = selectedAccentColor;
     }
-    updateColorSwatches();
+    syncColorControls();
   });
 
   primaryColorSelect?.addEventListener("change", () => {
     selectedBodyColor = primaryColorSelect.value;
-    updateColorSwatches();
+    syncColorControls();
     window.dispatchEvent(new CustomEvent("dab:checkout-color-change", {
-      detail: { bodyColor: selectedBodyColor }
+      detail: { bodyColor: selectedBodyColor, accentColor: selectedAccentColor }
     }));
   });
 
   accentColorSelect?.addEventListener("change", () => {
     selectedAccentColor = accentColorSelect.value;
-    updateColorSwatches();
+    syncColorControls();
     window.dispatchEvent(new CustomEvent("dab:checkout-color-change", {
-      detail: { accentColor: selectedAccentColor }
+      detail: { bodyColor: selectedBodyColor, accentColor: selectedAccentColor }
     }));
   });
 
