@@ -3,6 +3,12 @@ const productPage = document.querySelector("#product-page");
 const isLocalCheckoutTest =
   ["localhost", "127.0.0.1"].includes(window.location.hostname) &&
   new URLSearchParams(window.location.search).has("checkout");
+const productColorValues = Object.freeze({
+  "Clay Pink": "#AD7889",
+  Lavender: "#C9C9E7",
+  "Soft Lemon": "#FFE09A",
+  Charcoal: "#292929"
+});
 
 function setText(selector, value) {
   const element = document.querySelector(selector);
@@ -122,6 +128,8 @@ function renderVariants(product, checkoutButton, salesEnabled) {
   const colorPicker = document.querySelector("#product-color-picker");
   const primaryColorSelect = document.querySelector("#primary-color-select");
   const accentColorSelect = document.querySelector("#accent-color-select");
+  const primaryColorSwatch = document.querySelector("#primary-color-swatch");
+  const accentColorSwatch = document.querySelector("#accent-color-swatch");
   const checkoutLabel = checkoutButton.querySelector("span");
   let activeVariant = null;
   let selectedBodyColor = "";
@@ -129,6 +137,17 @@ function renderVariants(product, checkoutButton, salesEnabled) {
   let checkoutPending = false;
 
   productPage?.classList.toggle("sales-disabled", !salesEnabled);
+
+  function updateColorSwatches() {
+    primaryColorSwatch?.style.setProperty(
+      "--selected-color",
+      productColorValues[selectedBodyColor] || "transparent"
+    );
+    accentColorSwatch?.style.setProperty(
+      "--selected-color",
+      productColorValues[selectedAccentColor] || "transparent"
+    );
+  }
 
   function updateCheckout() {
     const checkoutUrl = salesEnabled && activeVariant
@@ -181,6 +200,7 @@ function renderVariants(product, checkoutButton, salesEnabled) {
       accentColorSelect.replaceChildren(...accentColors.map((color) => new Option(color, color)));
       accentColorSelect.value = selectedAccentColor;
     }
+    updateColorSwatches();
     updateCheckout();
     if (checkoutLabel) {
       checkoutLabel.textContent = salesEnabled
@@ -203,10 +223,12 @@ function renderVariants(product, checkoutButton, salesEnabled) {
       selectedAccentColor = event.detail.accentColor;
       if (accentColorSelect) accentColorSelect.value = selectedAccentColor;
     }
+    updateColorSwatches();
   });
 
   primaryColorSelect?.addEventListener("change", () => {
     selectedBodyColor = primaryColorSelect.value;
+    updateColorSwatches();
     window.dispatchEvent(new CustomEvent("dab:checkout-color-change", {
       detail: { bodyColor: selectedBodyColor }
     }));
@@ -214,6 +236,7 @@ function renderVariants(product, checkoutButton, salesEnabled) {
 
   accentColorSelect?.addEventListener("change", () => {
     selectedAccentColor = accentColorSelect.value;
+    updateColorSwatches();
     window.dispatchEvent(new CustomEvent("dab:checkout-color-change", {
       detail: { accentColor: selectedAccentColor }
     }));

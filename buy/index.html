@@ -7,7 +7,7 @@
   <meta name="description" content="Dab Block — first drop." />
   <title>DAB — Block</title>
   <link rel="stylesheet" href="/assets/css/styles.css?v=20260718-28" />
-  <link rel="stylesheet" href="/assets/css/buy.css?v=20260818-9" />
+  <link rel="stylesheet" href="/assets/css/buy.css?v=20260818-31" />
 </head>
 <body class="store-page">
   <main class="store-shell">
@@ -122,11 +122,17 @@
           <div class="edge-depth-options product-color-options">
             <label for="primary-color-select">
               <span>Primary color</span>
-              <select id="primary-color-select" name="primary-color"></select>
+              <span class="color-select-control">
+                <span class="color-select-swatch" id="primary-color-swatch" aria-hidden="true"></span>
+                <select id="primary-color-select" name="primary-color"></select>
+              </span>
             </label>
             <label for="accent-color-select">
               <span>Accent color</span>
-              <select id="accent-color-select" name="accent-color"></select>
+              <span class="color-select-control">
+                <span class="color-select-swatch" id="accent-color-swatch" aria-hidden="true"></span>
+                <select id="accent-color-select" name="accent-color"></select>
+              </span>
             </label>
           </div>
         </fieldset>
@@ -176,7 +182,7 @@
   </main>
 
   <script src="/assets/js/store-config.js?v=20260818-29"></script>
-  <script src="/assets/js/buy.js?v=20260818-17" defer></script>
+  <script src="/assets/js/buy.js?v=20260818-18" defer></script>
   <script type="importmap">
     {
       "imports": {
