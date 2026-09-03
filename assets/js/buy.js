@@ -369,7 +369,6 @@ if (store && productPage) {
   const product = store.product || {};
 
   setText("#product-name", product.name);
-  setText("#product-eyebrow", product.eyebrow);
   setText("#product-description", product.description);
   setText("#product-availability", product.availability);
   setText("#product-shipping", product.shipping);

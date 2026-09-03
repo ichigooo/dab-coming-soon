@@ -2,7 +2,6 @@ window.DAB_STORE = Object.freeze({
   enabled: true,
   product: Object.freeze({
     name: "Dab Block",
-    eyebrow: "Limited first run",
     price: "",
     shipping: "$5.95 flat-rate shipping.",
     returns: "Easy returns if it’s not the right fit.",
