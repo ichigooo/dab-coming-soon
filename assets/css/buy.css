@@ -22,7 +22,7 @@ body {
 }
 
 .product-header .brand-wordmark {
-  font-size: clamp(24px, 2.8vw, 30px);
+  width: clamp(190px, 19vw, 260px);
 }
 
 .product-nav {
@@ -910,7 +910,7 @@ body {
 
 @media (max-width: 520px) {
   .product-header .brand-wordmark {
-    font-size: 24px;
+    width: 156px;
   }
 
   .product-gallery {

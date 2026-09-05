@@ -131,12 +131,8 @@
 
     .brand-wordmark {
       display: block;
-      font-family: "Lazy Dog", "Comic Sans MS", cursive;
-      font-size: clamp(24px, 2.8vw, 30px);
-      font-weight: 400;
-      line-height: 1;
-      letter-spacing: .01em;
-      white-space: nowrap;
+      width: clamp(168px, 18vw, 224px);
+      height: auto;
     }
 
     .header-meta,
@@ -387,7 +383,8 @@
 
     .home-page .home-header .brand-wordmark,
     .product-page .home-header .brand-wordmark {
-      font-size: clamp(24px, 2.8vw, 30px);
+      width: clamp(190px, 19vw, 260px);
+      height: auto;
     }
 
     .home-hero-copy {
@@ -588,7 +585,7 @@
 
       .home-page .home-header .brand-wordmark,
       .product-page .home-header .brand-wordmark {
-        font-size: 24px;
+        width: 156px;
       }
 
       .home-hero-image {
@@ -1284,7 +1281,7 @@
     @media (max-width: 520px) {
       .header,
       .footer { padding-block: 18px; }
-      .brand-wordmark { font-size: 24px; }
+      .brand-wordmark { width: 158px; }
       .header-meta { gap: 16px; }
       .header-meta .edition { display: none; }
       .hero-copy { padding-top: 0; }
