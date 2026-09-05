@@ -113,16 +113,18 @@ window.DAB_STORE = Object.freeze({
             src: "/assets/images/dab-block-01-lavender-charcoal.jpeg",
             alt: "Lavender and Charcoal Dab Block 01 hanging from black cord with 15mm and 20mm edges",
             galleryPosition: 2
+          }),
+          Object.freeze({
+            bodyColor: "Clay Pink", accentColor: "Charcoal",
+            src: "/assets/images/dab-block-01-new.jpeg",
+            alt: "Clay Pink and Charcoal Dab Block 01",
+            galleryPosition: 3
           })
         ]),
         photos: Object.freeze([
           Object.freeze({
             src: "/assets/images/dab-block-01-main.jpg?v=20260904",
             alt: "Soft Lemon and Charcoal Dab Block 01 hanging from black cord in a studio product view"
-          }),
-          Object.freeze({
-            src: "/assets/images/dab-block-01-new.jpeg",
-            alt: "Dab Block 01"
           })
         ])
       })
