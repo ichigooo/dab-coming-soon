@@ -15,15 +15,6 @@ Continue developing a refined coming-soon site for **DAB**, a climbing brand. Th
 - Avoid bright gradients, glossy SaaS styling, excessive rounded cards, or decorative UI clutter
 - Avoid explicitly describing products as “3D printed” unless the owner later requests it
 
-## Current copy
-
-- Eyebrow: “Climbing, distilled.”
-- Hero: “Grip. Move. Repeat.”
-- Supporting copy: “DAB makes considered climbing tools for warm-ups, training days, and the moments between attempts. Designed by climbers. Made to move.”
-- Signup heading: “First drop, soon.”
-
-Copy can be refined, but keep it brief and brand-led.
-
 ## Important files
 
 - `index.html` — semantic page structure and copy
