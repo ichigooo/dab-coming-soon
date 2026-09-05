@@ -3,25 +3,88 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#ffffff" />
-  <meta name="description" content="Dab Block — first drop." />
-  <title>DAB — Block</title>
-  <link rel="stylesheet" href="/assets/css/styles.css?v=20260718-28" />
-  <link rel="stylesheet" href="/assets/css/buy.css?v=20260718-29" />
+  <meta name="theme-color" content="#f5f2ec" />
+  <meta name="description" content="DAB makes considered climbing tools for warm-ups, training days, and the moments between attempts." />
+  <title>DAB — Climbing, distilled.</title>
+  <link rel="stylesheet" href="/assets/css/styles.css?v=20260905-1" />
 </head>
-<body class="store-page">
+<body class="store-page home-page">
   <main class="store-shell">
-    <header class="header">
+    <header class="header home-header">
       <a class="brand" href="/" aria-label="DAB home">
-        <span class="brand-wordmark" aria-hidden="true">Dab</span>
+        <img class="brand-wordmark" src="/assets/images/dabclimbing-header.svg?v=20260905-2" alt="" width="288" height="60" />
       </a>
+      <nav class="home-nav" aria-label="Main navigation">
+        <a href="#products">Shop <span aria-hidden="true">↘</span></a>
+        <button class="cart-trigger" id="cart-trigger" type="button" aria-haspopup="dialog" aria-controls="cart-dialog">
+          Cart <span aria-hidden="true">(0)</span><span class="sr-only">, 0 items</span>
+        </button>
+      </nav>
     </header>
+
+    <section class="home-hero" aria-labelledby="home-hero-title">
+      <img class="home-hero-image" src="/assets/images/dab-hero-gym-3x1.png" alt="A stack of DAB climbing blocks on a gym bench beside a chalk bag and brush" width="2172" height="724" fetchpriority="high" />
+      <div class="home-hero-shade" aria-hidden="true"></div>
+
+      <div class="home-hero-copy">
+        <h1 id="home-hero-title">Dab Block</h1>
+        <a href="#products">Explore the first drop <span aria-hidden="true">›</span></a>
+      </div>
+    </section>
+
+    <section class="product-index" id="products" aria-label="First drop products">
+      <header class="product-index-header">
+        <p>First drop</p>
+        <span>02 products</span>
+      </header>
+      <div class="product-list">
+        <article class="product-card">
+          <a class="product-card-image product-card-image--block-02" href="/buy/block-02/" aria-label="View DAB BLOCK 02">
+            <img src="/assets/images/dab-block-02-main.png?v=20260904-02" alt="Cream and black DAB BLOCK 02 hanging from black cord" width="1439" height="1089" loading="lazy" />
+          </a>
+          <div class="product-card-meta">
+            <div>
+            <h3>DAB BLOCK 02</h3>
+              <p>Uneven Edge Block</p>
+            </div>
+            <span>$30.00</span>
+          </div>
+        </article>
+        <article class="product-card">
+          <a class="product-card-image" href="/buy/block-01/" aria-label="View DAB BLOCK 01">
+            <img src="/assets/images/dab-block-01-main.jpg?v=20260904" alt="Soft Lemon and Charcoal DAB BLOCK 01 hanging from black cord in a studio product view" width="986" height="878" loading="lazy" />
+          </a>
+          <div class="product-card-meta">
+            <div>
+            <h3>DAB BLOCK 01</h3>
+              <p>Flat Edge Block</p>
+            </div>
+            <span>$25.00</span>
+          </div>
+        </article>
+      </div>
+    </section>
 
     <section class="buy-layout" id="product-page" hidden aria-labelledby="product-name">
       <div class="buy-media">
-        <div class="model-stage" id="model-stage" aria-label="Interactive 3D model of Dab Block">
+        <section class="product-gallery" id="product-gallery" aria-label="Dab Block product photos">
+          <div class="gallery-frame">
+            <img id="gallery-image" src="/assets/images/dab-block-02-main.png?v=20260904-02" alt="Cream and black Dab Block 02 hanging from black cord" width="1439" height="1089" />
+          </div>
+          <div class="gallery-thumbnails" id="gallery-thumbnails" aria-label="Choose a product photo"></div>
+          <button class="media-mode-button media-mode-button--model" id="view-model" type="button">View 3D + customize</button>
+          <div class="gallery-controls">
+            <div class="gallery-navigation" aria-label="Product photo navigation">
+              <button id="gallery-previous" type="button" aria-label="Previous photo">←</button>
+              <span id="gallery-position" aria-live="polite">1 / 2</span>
+              <button id="gallery-next" type="button" aria-label="Next photo">→</button>
+            </div>
+          </div>
+        </section>
+        <div class="model-stage" id="model-stage" aria-label="Interactive 3D model of Dab Block" hidden>
           <canvas id="model-canvas"></canvas>
           <div class="model-status" id="model-status" role="status" aria-live="polite">Loading model</div>
+          <button class="media-mode-button media-mode-button--photos" id="view-photos" type="button">← Back to photos</button>
           <div class="model-tools">
             <section class="model-configurator" id="model-configurator" aria-label="Product finish editor">
               <div class="configurator-heading">
@@ -70,6 +133,10 @@
                     <label class="filament-swatch" title="Gold"><input type="radio" name="accent-color" value="#D49B42" /><span style="--swatch-color: #D49B42"></span><span class="sr-only">gold</span></label>
                     <label class="filament-swatch" title="Bronze"><input type="radio" name="accent-color" value="#745535" /><span style="--swatch-color: #745535"></span><span class="sr-only">bronze</span></label>
                     <label class="filament-swatch" title="Copper"><input type="radio" name="accent-color" value="#A94A2C" /><span style="--swatch-color: #A94A2C"></span><span class="sr-only">copper</span></label>
+                    <label class="filament-swatch" title="Clay Pink"><input type="radio" name="accent-color" value="#AD7889" /><span style="--swatch-color: #AD7889"></span><span class="sr-only">clay pink</span></label>
+                    <label class="filament-swatch" title="Lavender"><input type="radio" name="accent-color" value="#C9C9E7" /><span style="--swatch-color: #C9C9E7"></span><span class="sr-only">lavender</span></label>
+                    <label class="filament-swatch" title="Soft Lemon"><input type="radio" name="accent-color" value="#FFE09A" /><span style="--swatch-color: #FFE09A"></span><span class="sr-only">soft lemon</span></label>
+                    <label class="filament-swatch" title="Charcoal"><input type="radio" name="accent-color" value="#292929" /><span style="--swatch-color: #292929"></span><span class="sr-only">charcoal</span></label>
                       </span>
                     </span>
                   </span>
@@ -84,14 +151,13 @@
             </div>
             <label class="spin-speed" for="spin-speed">
               <span>Spin</span>
-              <input id="spin-speed" type="range" min="0" max="100" step="1" value="50" aria-label="Spin speed" />
+              <input id="spin-speed" type="range" min="0" max="100" step="0.5" value="0.5" aria-label="Spin speed" />
             </label>
           </div>
         </div>
       </div>
 
       <div class="buy-details">
-        <p class="buy-eyebrow" id="product-eyebrow">Limited first run</p>
         <div class="buy-title-row">
           <h1 id="product-name">Dab Block</h1>
         </div>
@@ -100,9 +166,40 @@
           <div class="variant-options" id="variant-options"></div>
           <p class="variant-pricing-note" id="variant-pricing-note" hidden>Custom pricing is confirmed after your customization details are reviewed and approved.</p>
         </fieldset>
+        <fieldset class="edge-depth-picker product-color-picker" id="product-color-picker" hidden>
+          <legend class="sr-only">Choose product colors</legend>
+          <div class="edge-depth-options product-color-options">
+            <label for="primary-color-select">
+              <span>Primary color</span>
+              <span class="color-select-control">
+                <span class="color-select-swatch" id="primary-color-swatch" aria-hidden="true"></span>
+                <select id="primary-color-select" name="primary-color"></select>
+              </span>
+            </label>
+            <label for="accent-color-select">
+              <span>Accent color</span>
+              <span class="color-select-control">
+                <span class="color-select-swatch" id="accent-color-swatch" aria-hidden="true"></span>
+                <select id="accent-color-select" name="accent-color"></select>
+              </span>
+            </label>
+          </div>
+          <button class="color-3d-link" id="view-colors-3d" type="button">View colors in 3D <span aria-hidden="true">↗</span></button>
+        </fieldset>
+        <fieldset class="edge-depth-picker" id="edge-depth-picker" hidden>
+          <legend class="sr-only">Choose edge depths</legend>
+          <div class="edge-depth-options">
+            <label for="edge-depth-1">
+              <span>Edge depth 1</span>
+              <select id="edge-depth-1" name="edge-depth-1"></select>
+            </label>
+            <label for="edge-depth-2">
+              <span>Edge depth 2</span>
+              <select id="edge-depth-2" name="edge-depth-2"></select>
+            </label>
+          </div>
+        </fieldset>
         <dl class="product-specs" aria-label="Customization and product details">
-          <div><dt>Finish</dt><dd>Choose from available colors</dd></div>
-          <div><dt>Edge depth</dt><dd>Custom sizes available</dd></div>
           <div><dt>Rope</dt><dd>5 mm black nylon accessory cord</dd></div>
           <div><dt>Estimated max static load</dt><dd>100 kg / 220 lb*</dd></div>
         </dl>
@@ -133,8 +230,18 @@
     </footer>
   </main>
 
-  <script src="/assets/js/store-config.js?v=20260720-1"></script>
-  <script src="/assets/js/buy.js?v=20260720-1" defer></script>
+  <dialog class="cart-dialog" id="cart-dialog" aria-labelledby="cart-title">
+    <div class="cart-dialog-header">
+      <h2 id="cart-title">Cart <span aria-hidden="true">(0)</span></h2>
+      <button class="cart-close" id="cart-close" type="button" aria-label="Close cart">Close</button>
+    </div>
+    <div class="cart-empty">
+      <p>Your cart is empty.</p>
+      <a href="#products" id="cart-shop-link">Shop the first drop <span aria-hidden="true">↘</span></a>
+    </div>
+  </dialog>
+
+  <script src="/assets/js/cart.js?v=20260904-1" defer></script>
   <script type="importmap">
     {
       "imports": {

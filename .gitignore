@@ -6,3 +6,6 @@ Thumbs.db
 dist/
 .vercel
 .env*
+
+# Manufacturing geometry must never be committed or deployed.
+private-models/

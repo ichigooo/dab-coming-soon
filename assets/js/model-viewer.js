@@ -32,10 +32,9 @@ const accentName = document.querySelector("#accent-color-name");
 const zoomOut = document.querySelector("#zoom-out");
 const zoomIn = document.querySelector("#zoom-in");
 const spinSpeed = document.querySelector("#spin-speed");
-const defaultModelUrl = new URL("../models/DAB-BLOCK-01.3mf", import.meta.url).href;
+const defaultModelUrl = new URL("../models/dab-block-01.preview.3mf", import.meta.url).href;
 const minimumSpinSpeed = 0.1;
 const maximumSpinSpeed = 100;
-const mediumSpinSpeed = Math.sqrt(minimumSpinSpeed * maximumSpinSpeed);
 const blockColor = getComputedStyle(document.documentElement)
   .getPropertyValue("--block-color")
   .trim() || "#000000";
@@ -57,7 +56,7 @@ if (stage && canvas) {
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(36, 1, 0.01, 1000);
-  camera.position.set(0, 0.5, 5.8);
+  camera.position.set(0, 0, 5.8);
 
   const controls = new OrbitControls(camera, canvas);
   controls.enableDamping = true;
@@ -67,7 +66,7 @@ if (stage && canvas) {
   controls.minDistance = 2.5;
   controls.maxDistance = 8;
   controls.autoRotate = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  controls.autoRotateSpeed = mediumSpinSpeed;
+  controls.autoRotateSpeed = maximumSpinSpeed * 0.005;
 
   canvas.addEventListener("touchmove", (event) => {
     if (event.touches.length > 1) event.preventDefault();
@@ -84,54 +83,99 @@ if (stage && canvas) {
 
   const selectedBody = () => bodyInputs.find((input) => input.checked)?.value || blockColor;
   const selectedAccent = () => accentInputs.find((input) => input.checked)?.value || "#ffffff";
+  const selectedColorName = (inputs) =>
+    inputs.find((input) => input.checked)?.closest("label")?.title || "";
+  const dispatchColorSelection = () => {
+    const variantId = document.querySelector('input[name="hold-type"]:checked')?.value;
+    const variant = window.DAB_STORE.product.variants.find((item) => item.id === variantId);
+    const allowed = window.DAB_STORE.allowedAccentColors(
+      selectedColorName(bodyInputs), variant?.accentColors || []
+    );
+    accentInputs.forEach((input) => {
+      const label = input.closest("label");
+      input.disabled = !allowed.includes(label?.title);
+      if (label) label.hidden = input.disabled;
+    });
+    if (!allowed.includes(selectedColorName(accentInputs))) {
+      const fallback = accentInputs.find((input) => !input.disabled);
+      if (fallback) fallback.checked = true;
+    }
+    const selected = accentInputs.find((input) => input.checked);
+    if (selected) {
+      accentColor.set(selected.value);
+      accentCurrent?.style.setProperty("--swatch-color", selected.value);
+      if (accentName) accentName.textContent = selectedColorName(accentInputs);
+      updateVertexColors();
+    }
+    window.dispatchEvent(new CustomEvent("dab:color-change", {
+      detail: {
+        bodyColor: selectedColorName(bodyInputs),
+        accentColor: selectedColorName(accentInputs)
+      }
+    }));
+  };
   const bodyColor = new THREE.Color(selectedBody());
   const accentColor = new THREE.Color(selectedAccent());
-  const accentDisplayColor = new THREE.Vector3();
 
-  function updateAccentDisplayColor(hexColor) {
-    const value = Number.parseInt(hexColor.slice(1), 16);
-    accentDisplayColor.set(
-      ((value >> 16) & 255) / 255,
-      ((value >> 8) & 255) / 255,
-      (value & 255) / 255
-    );
+  function setAvailableColors(inputs, availableNames, defaultName) {
+    const restricted = Array.isArray(availableNames) && availableNames.length > 0;
+    const allowed = new Set(availableNames || []);
+    let selection = null;
+
+    inputs.forEach((input) => {
+      const label = input.closest("label");
+      const isAvailable = !restricted || allowed.has(label?.title);
+      if (label) label.hidden = !isAvailable;
+      input.disabled = !isAvailable;
+      if (isAvailable && label?.title === defaultName) selection = input;
+      if (isAvailable && !selection) selection = input;
+    });
+
+    if (selection) {
+      selection.checked = true;
+      selection.dispatchEvent(new Event("change", { bubbles: true }));
+    }
   }
-
-  updateAccentDisplayColor(selectedAccent());
 
   const material = new THREE.MeshStandardMaterial({
     vertexColors: true,
     roughness: 0.68,
     metalness: 0.02
   });
-  material.onBeforeCompile = (shader) => {
-    shader.uniforms.dabAccentLinear = { value: accentColor };
-    shader.uniforms.dabAccentDisplay = { value: accentDisplayColor };
-    shader.fragmentShader = shader.fragmentShader.replace(
-      "void main() {",
-      `
-        uniform vec3 dabAccentLinear;
-        uniform vec3 dabAccentDisplay;
-        void main() {
-      `
-    );
-    shader.fragmentShader = shader.fragmentShader.replace(
-      "#include <dithering_fragment>",
-      `
-        float dabIsAccent = 1.0 - step(0.001, distance(diffuseColor.rgb, dabAccentLinear));
-        gl_FragColor.rgb = mix(gl_FragColor.rgb, dabAccentDisplay, dabIsAccent);
-        float dabPureWhite = step(0.999, min(diffuseColor.r, min(diffuseColor.g, diffuseColor.b)));
-        gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(1.0), dabPureWhite);
-        #include <dithering_fragment>
-      `
-    );
-  };
-  material.customProgramCacheKey = () => "dab-pure-white-v1";
 
   let model = null;
   let accentMask = null;
   let triangleCount = 0;
   let loadSequence = 0;
+  let accentMode = null;
+
+  function createCenterBackingMask(geometry) {
+    const positions = geometry.getAttribute("position");
+    geometry.computeBoundingBox();
+    const box = geometry.boundingBox;
+    const centerX = (box.min.x + box.max.x) / 2;
+    const centerY = (box.min.y + box.max.y) / 2;
+    const halfWidth = (box.max.x - box.min.x) * 0.37;
+    const halfHeight = (box.max.y - box.min.y) * 0.32;
+    const mask = new Uint8Array(positions.count / 3);
+
+    for (let triangle = 0; triangle < mask.length; triangle += 1) {
+      let matches = true;
+      for (let vertex = 0; vertex < 3; vertex += 1) {
+        const index = (triangle * 3) + vertex;
+        if (
+          Math.abs(positions.getX(index) - centerX) > halfWidth ||
+          Math.abs(positions.getY(index) - centerY) > halfHeight
+        ) {
+          matches = false;
+          break;
+        }
+      }
+      if (matches) mask[triangle] = 1;
+    }
+
+    return mask;
+  }
 
   function readAccentMask(buffer) {
     const files = unzipSync(new Uint8Array(buffer));
@@ -149,6 +193,74 @@ if (stage && canvas) {
     }
 
     return null;
+  }
+
+  function readPlanarAccentRegion(buffer) {
+    const files = unzipSync(new Uint8Array(buffer));
+    for (const [name, contents] of Object.entries(files)) {
+      if (!name.toLowerCase().endsWith(".model")) continue;
+      const document = new DOMParser().parseFromString(strFromU8(contents), "application/xml");
+      const vertices = Array.from(document.getElementsByTagName("vertex"));
+      const painted = Array.from(document.getElementsByTagName("triangle"))
+        .filter((triangle) => triangle.hasAttribute("paint_color"));
+      if (!vertices.length || !painted.length) continue;
+
+      const region = {
+        minX: Infinity,
+        maxX: -Infinity,
+        minY: Infinity,
+        maxY: -Infinity,
+        minZ: Infinity,
+        maxZ: -Infinity
+      };
+
+      painted.forEach((triangle) => {
+        ["v1", "v2", "v3"].forEach((attribute) => {
+          const vertex = vertices[Number.parseInt(triangle.getAttribute(attribute), 10)];
+          if (!vertex) return;
+          const x = Number.parseFloat(vertex.getAttribute("x"));
+          const y = Number.parseFloat(vertex.getAttribute("y"));
+          const z = Number.parseFloat(vertex.getAttribute("z"));
+          region.minX = Math.min(region.minX, x);
+          region.maxX = Math.max(region.maxX, x);
+          region.minY = Math.min(region.minY, y);
+          region.maxY = Math.max(region.maxY, y);
+          region.minZ = Math.min(region.minZ, z);
+          region.maxZ = Math.max(region.maxZ, z);
+        });
+      });
+
+      if ((region.maxZ - region.minZ) < 0.01) return region;
+    }
+
+    return null;
+  }
+
+  function createPlanarAccentMask(geometry, region) {
+    const positions = geometry.getAttribute("position");
+    const mask = new Uint8Array(positions.count / 3);
+    const tolerance = 0.02;
+
+    for (let triangle = 0; triangle < mask.length; triangle += 1) {
+      let matches = true;
+      for (let vertex = 0; vertex < 3; vertex += 1) {
+        const index = (triangle * 3) + vertex;
+        const x = positions.getX(index);
+        const y = positions.getY(index);
+        const z = positions.getZ(index);
+        if (
+          x < region.minX - tolerance || x > region.maxX + tolerance ||
+          y < region.minY - tolerance || y > region.maxY + tolerance ||
+          Math.abs(z - region.minZ) > tolerance
+        ) {
+          matches = false;
+          break;
+        }
+      }
+      if (matches) mask[triangle] = 1;
+    }
+
+    return mask;
   }
 
   function readPackagedMesh(buffer) {
@@ -202,13 +314,21 @@ if (stage && canvas) {
   }
 
   function resize() {
-    const { width, height } = stage.getBoundingClientRect();
+    const { width, height } = canvas.getBoundingClientRect();
+    if (!width || !height) return;
+    if (model) positionModel(model);
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
   }
 
-  function fitModel(mesh) {
+  function positionModel(mesh) {
+    mesh.position.y = window.matchMedia("(max-width: 820px)").matches
+      ? 0
+      : (stage.clientWidth < 620 ? 0.25 : 0.55);
+  }
+
+  function fitModel(mesh, url) {
     mesh.geometry.computeVertexNormals();
     mesh.geometry.computeBoundingBox();
     const box = mesh.geometry.boundingBox;
@@ -220,9 +340,11 @@ if (stage && canvas) {
     mesh.geometry.translate(-center.x, -center.y, -center.z);
     const maxAxis = Math.max(size.x, size.y, size.z);
     const targetSize = stage.clientWidth < 620 ? 1.75 : 2.55;
-    mesh.scale.setScalar(targetSize / maxAxis);
-    mesh.rotation.set(THREE.MathUtils.degToRad(-62), 0, THREE.MathUtils.degToRad(-22));
-    mesh.position.y = stage.clientWidth < 620 ? 0.25 : 0.55;
+    const defaultScale = (targetSize / maxAxis) * 0.65;
+    const xScale = new URL(url, window.location.href).pathname.endsWith("/dab-block-01.preview.3mf") ? 1 : 0.9;
+    mesh.scale.set(defaultScale * xScale, defaultScale, defaultScale);
+    mesh.rotation.set(0, 0, 0);
+    positionModel(mesh);
 
     controls.target.set(0, 0, 0);
     controls.update();
@@ -257,9 +379,14 @@ if (stage && canvas) {
 
       const nextTriangleCount = geometry.getAttribute("position").count / 3;
       const paintedTriangles = readAccentMask(buffer);
-      const nextAccentMask = paintedTriangles?.length === nextTriangleCount
-        ? paintedTriangles
-        : new Uint8Array(nextTriangleCount);
+      const planarAccentRegion = readPlanarAccentRegion(buffer);
+      const nextAccentMask = accentMode === "center-backing"
+        ? createCenterBackingMask(geometry)
+        : planarAccentRegion
+          ? createPlanarAccentMask(geometry, planarAccentRegion)
+        : (paintedTriangles?.length === nextTriangleCount
+            ? paintedTriangles
+            : new Uint8Array(nextTriangleCount));
       geometry.setAttribute("color", new THREE.BufferAttribute(new Float32Array(nextTriangleCount * 9), 3));
 
       if (sequence !== loadSequence) {
@@ -269,13 +396,17 @@ if (stage && canvas) {
 
       if (model) {
         scene.remove(model);
+        model.children.forEach((child) => {
+          child.geometry?.dispose();
+          child.material?.dispose();
+        });
         model.geometry.dispose();
       }
 
       model = new THREE.Mesh(geometry, material);
       triangleCount = nextTriangleCount;
       accentMask = nextAccentMask;
-      fitModel(model);
+      fitModel(model, url);
       scene.add(model);
       updateVertexColors();
       if (status) status.hidden = true;
@@ -304,6 +435,7 @@ if (stage && canvas) {
       bodyCurrent?.style.setProperty("--swatch-color", input.value);
       if (bodyName) bodyName.textContent = input.closest("label")?.title || "Selected color";
       updateVertexColors();
+      dispatchColorSelection();
       if (bodyPalette) bodyPalette.hidden = true;
       bodyToggle?.setAttribute("aria-expanded", "false");
     });
@@ -313,10 +445,10 @@ if (stage && canvas) {
     input.addEventListener("change", () => {
       if (!input.checked) return;
       accentColor.set(input.value);
-      updateAccentDisplayColor(input.value);
       accentCurrent?.style.setProperty("--swatch-color", input.value);
       if (accentName) accentName.textContent = input.closest("label")?.title || "Selected color";
       updateVertexColors();
+      dispatchColorSelection();
       if (accentPalette) accentPalette.hidden = true;
       accentToggle?.setAttribute("aria-expanded", "false");
     });
@@ -340,11 +472,50 @@ if (stage && canvas) {
   spinSpeed?.addEventListener("input", () => {
     controls.autoRotate = true;
     const sliderProgress = Number(spinSpeed.value) / 100;
-    controls.autoRotateSpeed = minimumSpinSpeed * ((maximumSpinSpeed / minimumSpinSpeed) ** sliderProgress);
+    controls.autoRotateSpeed = Math.max(minimumSpinSpeed, maximumSpinSpeed * sliderProgress);
   });
 
   window.addEventListener("dab:model-change", (event) => {
-    if (event.detail?.modelUrl) loadModel(event.detail.modelUrl);
+    const detail = event.detail || {};
+    accentMode = detail.accentMode || null;
+    setAvailableColors(bodyInputs, detail.bodyColors, detail.defaultBodyColor);
+    setAvailableColors(accentInputs, detail.accentColors, detail.defaultAccentColor);
+    if (detail.modelUrl) loadModel(detail.modelUrl);
+  });
+
+  window.addEventListener("dab:checkout-color-change", (event) => {
+    const detail = event.detail || {};
+    const setColor = (inputs, colorName) => {
+      if (!colorName) return;
+      const input = inputs.find((candidate) => candidate.closest("label")?.title === colorName);
+      if (input && !input.disabled) {
+        input.checked = true;
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+    };
+    setColor(bodyInputs, detail.bodyColor);
+    setColor(accentInputs, detail.accentColor);
+  });
+
+  const selectedVariantId = document.querySelector('input[name="hold-type"]:checked')?.value;
+  const selectedVariant = window.DAB_STORE?.product?.variants
+    ?.find((variant) => variant.id === selectedVariantId);
+  if (selectedVariant) {
+    accentMode = selectedVariant.accentMode || null;
+    setAvailableColors(bodyInputs, selectedVariant.bodyColors, selectedVariant.defaultBodyColor);
+    setAvailableColors(accentInputs, selectedVariant.accentColors, selectedVariant.defaultAccentColor);
+  }
+
+  const initialWebsiteColors = [
+    [bodyInputs, document.querySelector("#primary-color-select")?.value],
+    [accentInputs, document.querySelector("#accent-color-select")?.value]
+  ];
+  initialWebsiteColors.forEach(([inputs, colorName]) => {
+    const input = inputs.find((candidate) => candidate.closest("label")?.title === colorName);
+    if (input && !input.disabled) {
+      input.checked = true;
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+    }
   });
 
   resize();

@@ -37,6 +37,27 @@ http://localhost:8000
 
 You can also open `index.html` directly, though a local server is better for testing.
 
+## 3D model privacy
+
+The interactive viewer uses reduced, display-only models from `assets/models/`.
+Anything in that directory is public and can be downloaded by a visitor, so it
+must not contain manufacturing geometry, exact tolerances, internal channels, or
+other production details.
+
+Keep production STL/3MF files in the git-ignored `private-models/` directory.
+The build script uses an explicit allowlist and publishes only files named:
+
+- `assets/models/dab-block-01.preview.3mf`
+- `assets/models/dab-block-02.preview.3mf`
+
+Run `npm run build` before deployment and verify that `dist/assets/models/`
+contains only those display models. Deploy `dist/`, not the repository root.
+
+If production geometry was previously committed to a remote repository, moving
+or deleting the current file does not erase it from Git history. Rotate access
+to a private repository or purge that file from history before making the
+repository public.
+
 ## Email signup
 
 The form currently behaves as a demo:

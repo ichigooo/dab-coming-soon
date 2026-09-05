@@ -4,6 +4,23 @@
   "outputDirectory": "dist",
   "headers": [
     {
+      "source": "/assets/models/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Content-Disposition",
+          "value": "inline"
+        }
+      ]
+    },
+    {
       "source": "/assets/js/store-config.js",
       "headers": [
         {
