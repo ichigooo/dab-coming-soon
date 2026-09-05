@@ -37,6 +37,50 @@ http://localhost:8000
 
 You can also open `index.html` directly, though a local server is better for testing.
 
+## Collaboration workflow
+
+Treat Alan's `main` branch as the upstream source of truth and push your work to
+your own fork. Configure this once:
+
+```bash
+git config remote.pushDefault origin
+git config branch.main.pushRemote origin
+```
+
+For each change, update `main` before creating a focused feature branch:
+
+```bash
+git switch main
+git fetch alanyeh
+git rebase alanyeh/main
+git switch -c your-feature-name
+```
+
+Make small commits containing only the files needed for that change:
+
+```bash
+git status
+git add <specific-files>
+git diff --staged
+git commit -m "Describe the change"
+```
+
+Before sharing the branch, replay it on the latest upstream work and push it to
+your fork:
+
+```bash
+git fetch alanyeh
+git rebase alanyeh/main
+git push -u origin your-feature-name
+```
+
+Open a pull request from the feature branch into Alan's `main`. Avoid working
+directly on `main`, coordinate before editing the same sections, and do not
+commit temporary scripts, build output, or accidental file-permission changes.
+Rebase regularly when a branch stays open for several days. Conflicts cannot be
+eliminated completely, but keeping branches current and changes focused makes
+them much less likely.
+
 ## 3D model privacy
 
 The interactive viewer uses reduced, display-only models from `assets/models/`.
