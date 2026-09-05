@@ -613,6 +613,10 @@
         width: calc(100% - 56px);
       }
 
+      .home-hero-copy h1 {
+        font-size: 22px;
+      }
+
       .product-index-header {
         grid-template-columns: 1fr;
       }
