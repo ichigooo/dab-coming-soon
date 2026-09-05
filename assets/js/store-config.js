@@ -73,6 +73,14 @@ window.DAB_STORE = Object.freeze({
             colorFallback: true,
             src: "/assets/images/dab-block-02-color-lineup.png",
             alt: "Clay Pink, Soft Lemon, and Lavender Dab Block 02 colorways on rock"
+          }),
+          Object.freeze({
+            src: "/assets/images/dab-block-02-chalk.jpg",
+            alt: "Clay Pink and Charcoal Dab Block 02 on a chalked gym floor"
+          }),
+          Object.freeze({
+            src: "/assets/images/dab-block-02-lineup.jpg",
+            alt: "Dab Block 02 colorways arranged together"
           })
         ])
       }),
@@ -125,6 +133,19 @@ window.DAB_STORE = Object.freeze({
           Object.freeze({
             src: "/assets/images/dab-block-01-main.jpg?v=20260904",
             alt: "Soft Lemon and Charcoal Dab Block 01 hanging from black cord in a studio product view"
+          }),
+          Object.freeze({
+            src: "/assets/images/dab-block-01-front.jpg?v=20260818-2",
+            alt: "Soft Lemon and Charcoal Dab Block 01 in a studio product view"
+          }),
+          Object.freeze({
+            src: "/assets/images/dab-block-01-pack.jpg?v=20260818-2",
+            alt: "Soft Lemon and Charcoal Dab Block 01 resting on rock"
+          }),
+          Object.freeze({
+            src: "/assets/images/dab-block-01-detail.jpg?v=20260818-2",
+            alt: "Soft Lemon and Charcoal Dab Block 01 hanging from a carabiner",
+            objectPosition: "center bottom"
           })
         ])
       })
