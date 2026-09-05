@@ -37,6 +37,6 @@
         message.textContent = "Something went wrong. Please try again.";
       } finally {
         submitButton.disabled = false;
-        submitButton.innerHTML = 'Notify me <span class="arrow">↗</span>';
+        submitButton.innerHTML = 'Notify me <svg class="arrow nav-arrow" aria-hidden="true" viewBox="0 0 10 10"><path d="M2 2h6v6M8 2 2 8"></path></svg>';
       }
     });

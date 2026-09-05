@@ -281,8 +281,12 @@
       stroke-linejoin: miter;
     }
 
+    .nav-arrow--down {
+      transform: rotate(90deg);
+    }
+
     .nav-arrow--left {
-      transform: scaleX(-1);
+      transform: rotate(180deg);
     }
 
     .home-nav a,
