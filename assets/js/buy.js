@@ -3,8 +3,7 @@ const productPage = document.querySelector("#product-page");
 document.querySelector(".block-guide-link")?.addEventListener("click", () => {
   const guide = document.querySelector("#product-guide");
   if (!guide) return;
-  guide.open = true;
-  guide.querySelector("summary")?.focus({ preventScroll: true });
+  guide.querySelector("h2")?.focus({ preventScroll: true });
 });
 const isLocalCheckoutTest =
   ["localhost", "127.0.0.1"].includes(window.location.hostname) &&
@@ -138,7 +137,7 @@ function initializeProductMedia(product) {
     if (image) {
       image.src = photos[activePhoto].src;
       image.alt = photos[activePhoto].alt;
-      image.style.objectPosition = photos[activePhoto].objectPosition || "center";
+      image.style.objectPosition = "center";
     }
     if (position) position.textContent = `${activePhoto + 1} / ${photos.length}`;
     thumbnails?.querySelectorAll(".gallery-thumbnail").forEach((thumbnail, thumbnailIndex) => {
@@ -189,6 +188,8 @@ function initializeProductMedia(product) {
   }
 
   function updatePhotos() {
+    // Match the shortest photo at full width and keep the frame stable between slides.
+    gallery?.style.setProperty("--gallery-aspect-ratio", activeVariant?.galleryAspectRatio || "3 / 2");
     photos = [...(activeVariant?.photos || [])];
     for (const photo of activeVariant?.colorPhotos || []) {
       if (Number.isInteger(photo.galleryPosition) && photo.galleryPosition > 0) {
@@ -351,7 +352,6 @@ function renderVariants(product, checkoutButton, salesEnabled) {
     setText("#product-price", variant.price || product.price);
     if (variantCollapseCurrent) variantCollapseCurrent.textContent = variant.name;
     renderProductDescription(variant);
-    setText("#product-number", `${String(variants.indexOf(variant) + 1).padStart(2, "0")} / ${String(variants.length).padStart(2, "0")}`);
     document.title = "DAB";
     selectedBodyColor = variant.defaultBodyColor || "";
     selectedAccentColor = variant.defaultAccentColor || "";

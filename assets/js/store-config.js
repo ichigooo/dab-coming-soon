@@ -29,6 +29,7 @@ window.DAB_STORE = Object.freeze({
           ])
         }),
         price: "$30.00",
+        galleryAspectRatio: "5671 / 3527",
         modelUrl: "/assets/models/dab-block-02.preview.3mf?v=20260904-1",
         checkoutUrl: "https://checkout.dabclimbing.com/b/7sY3cx40RdkR3sCbYZ4wM02",
         edgeDepths: Object.freeze([12, 15, 18, 20, 22, 25]),
@@ -106,6 +107,7 @@ window.DAB_STORE = Object.freeze({
           ])
         }),
         price: "$25.00",
+        galleryAspectRatio: "3 / 2",
         modelUrl: "/assets/models/dab-block-01.preview.3mf?v=20260904-1",
         checkoutUrl: "https://checkout.dabclimbing.com/b/6oU5kF2WN3Khe7gaUV4wM03",
         edgeDepths: Object.freeze([12, 15, 18, 20, 22, 25]),

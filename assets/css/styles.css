@@ -394,11 +394,14 @@
     .home-hero-copy {
       position: absolute;
       z-index: 1;
-      top: 50%;
-      left: clamp(48px, 6vw, 96px);
-      width: min(320px, calc(100% - clamp(96px, 12vw, 192px)));
+      bottom: clamp(24px, 3vw, 48px);
+      left: var(--pad);
+      right: var(--pad);
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
       color: #11100f;
-      transform: translateY(-50%);
     }
 
     .home-hero-copy p,
@@ -412,6 +415,7 @@
 
     .home-hero-copy a {
       display: inline-flex;
+      flex-shrink: 0;
       align-items: center;
       justify-content: center;
       gap: 14px;
@@ -441,12 +445,12 @@
     }
 
     .home-hero-copy h1 {
-      margin: 0 0 16px;
-      font-family: "Libre Baskerville", Baskerville, Georgia, serif;
-      font-size: clamp(26px, 2.4vw, 36px);
-      font-weight: 400;
+      margin: 0;
+      font-family: "Instrument Sans", "Inter", Arial, sans-serif;
+      font-size: clamp(32px, 3.4vw, 52px);
+      font-weight: 500;
       line-height: 1.1;
-      letter-spacing: -.025em;
+      letter-spacing: -.04em;
       text-transform: none;
     }
 
@@ -529,20 +533,6 @@
       background: var(--warm-white);
     }
 
-    .product-card-meta::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 22px;
-      width: 42px;
-      height: 3px;
-      background: var(--lavender);
-    }
-
-    .product-card:nth-child(2) .product-card-meta::before {
-      background: var(--clay);
-    }
-
     .product-card + .product-card .product-card-meta {
       padding-left: 22px;
     }
@@ -550,7 +540,7 @@
     .product-card-meta h3,
     .product-card-meta > span {
       margin: 0;
-      font-size: 12px;
+      font-size: clamp(16px, 1.4vw, 20px);
       font-weight: 400;
       line-height: 1.35;
       letter-spacing: .04em;
@@ -558,6 +548,7 @@
 
     .product-card-meta p {
       margin-top: 5px;
+      font-size: clamp(12px, 1vw, 14px);
       color: #45423f;
       letter-spacing: .08em;
     }
@@ -609,14 +600,15 @@
       }
 
       .home-hero-copy {
-        top: 48%;
-        left: 28px;
-        width: calc(100% - 56px);
+        bottom: 20px;
+        left: var(--pad);
+        right: var(--pad);
+        gap: 12px;
       }
 
       .home-hero-copy h1 {
-        margin-bottom: 12px;
-        font-size: 18px;
+        margin-bottom: 0;
+        font-size: clamp(22px, 4.5vw, 30px);
       }
 
       .home-hero-copy a {
