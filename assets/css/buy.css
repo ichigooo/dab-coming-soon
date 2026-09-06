@@ -1910,6 +1910,67 @@ body {
   margin-bottom: 20px;
 }
 
+.variant-collapse-toggle {
+  display: none;
+}
+
+@media (max-width: 820px) {
+  .buy-media > .variant-picker {
+    width: 100%;
+    margin: 0;
+    padding: 20px 20px 0;
+    background: var(--paper);
+  }
+
+  .buy-media > .customization-step {
+    width: 100%;
+    margin: 0;
+    padding: 24px 20px 28px;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    background: var(--paper);
+  }
+
+  .variant-collapse-toggle {
+    display: flex;
+    width: 100%;
+    min-height: 48px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    color: var(--ink);
+    background: transparent;
+    font: inherit;
+    font-size: 10px;
+    letter-spacing: .08em;
+    text-align: left;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .variant-collapse-action {
+    color: var(--soft);
+    white-space: nowrap;
+  }
+
+  .variant-collapse-toggle[aria-expanded="true"] .variant-collapse-action span {
+    display: inline-block;
+    transform: rotate(45deg);
+  }
+
+  .variant-picker.is-collapsed .variant-options,
+  .variant-picker.is-collapsed .variant-pricing-note {
+    display: none;
+  }
+
+  .variant-picker:not(.is-collapsed) .variant-options {
+    margin-top: 12px;
+  }
+}
+
 @media (max-width: 380px) {
   .buy-details .variant-options {
     grid-template-columns: 1fr;
