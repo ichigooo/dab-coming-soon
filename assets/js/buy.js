@@ -217,6 +217,8 @@ function renderVariants(product, checkoutButton, salesEnabled) {
   const variants = Array.isArray(product.variants) ? product.variants : [];
   const configuratorSize = document.querySelector("#configurator-size");
   const pricingNote = document.querySelector("#variant-pricing-note");
+  const variantCollapseToggle = document.querySelector("#variant-collapse-toggle");
+  const variantCollapseCurrent = document.querySelector("#variant-collapse-current");
   const edgeDepthPicker = document.querySelector("#edge-depth-picker");
   const edgeDepthSelects = [
     document.querySelector("#edge-depth-1"),
@@ -347,9 +349,10 @@ function renderVariants(product, checkoutButton, salesEnabled) {
     setText("#product-name", variant.name);
     setText("#product-subtitle", variant.description);
     setText("#product-price", variant.price || product.price);
+    if (variantCollapseCurrent) variantCollapseCurrent.textContent = variant.name;
     renderProductDescription(variant);
     setText("#product-number", `${String(variants.indexOf(variant) + 1).padStart(2, "0")} / ${String(variants.length).padStart(2, "0")}`);
-    document.title = `DAB — ${variant.name}`;
+    document.title = "DAB";
     selectedBodyColor = variant.defaultBodyColor || "";
     selectedAccentColor = variant.defaultAccentColor || "";
     setConfiguratorSize(variant);
@@ -538,6 +541,8 @@ function renderVariants(product, checkoutButton, salesEnabled) {
 
     input.addEventListener("change", () => {
       setVariantState(variant);
+      picker.classList.add("is-collapsed");
+      variantCollapseToggle?.setAttribute("aria-expanded", "false");
       window.dispatchEvent(new CustomEvent("dab:model-change", {
         detail: {
           modelUrl: variant.modelUrl,
@@ -561,7 +566,36 @@ function renderVariants(product, checkoutButton, salesEnabled) {
   setVariantState(initialVariant);
   const initialInput = options.querySelector(`input[value="${initialVariant.id}"]`);
   if (initialInput) initialInput.checked = true;
+  picker.classList.toggle("is-collapsed", Boolean(requestedVariantId));
+  variantCollapseToggle?.setAttribute("aria-expanded", requestedVariantId ? "false" : "true");
+  variantCollapseToggle?.addEventListener("click", () => {
+    const collapsed = picker.classList.toggle("is-collapsed");
+    variantCollapseToggle.setAttribute("aria-expanded", String(!collapsed));
+  });
   picker.hidden = false;
+}
+
+function initializeResponsiveProductFlow() {
+  const media = document.querySelector(".buy-media");
+  const variantPicker = document.querySelector("#variant-picker");
+  const customization = document.querySelector(".customization-step");
+  if (!media || !variantPicker || !customization) return;
+
+  const details = customization.parentElement;
+  const originalNextSibling = customization.nextElementSibling;
+  const mobileLayout = window.matchMedia("(max-width: 820px)");
+
+  function syncProductFlow() {
+    if (mobileLayout.matches) {
+      media.append(variantPicker, customization);
+    } else if (customization.parentElement !== details) {
+      details.insertBefore(customization, originalNextSibling);
+      details.insertBefore(variantPicker, customization);
+    }
+  }
+
+  syncProductFlow();
+  mobileLayout.addEventListener?.("change", syncProductFlow);
 }
 
 if (store && productPage) {
@@ -581,6 +615,8 @@ if (store && productPage) {
     });
     renderVariants(product, checkoutButton, store.enabled || isLocalCheckoutTest);
   }
+
+  initializeResponsiveProductFlow();
 
   productPage.hidden = false;
   initializeProductMedia(product);
