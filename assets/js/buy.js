@@ -1,6 +1,6 @@
 const store = window.DAB_STORE;
 const productPage = document.querySelector("#product-page");
-document.querySelector(".block-guide-link")?.addEventListener("click", () => {
+document.querySelector(".block-comparison-link")?.addEventListener("click", () => {
   const guide = document.querySelector("#product-guide");
   if (!guide) return;
   guide.querySelector("h2")?.focus({ preventScroll: true });
@@ -153,7 +153,7 @@ function initializeProductMedia(product) {
     modelStage.hidden = false;
     if (!modelLoaded) {
       modelLoaded = true;
-      import("/assets/js/model-viewer.js?v=20260905-2");
+      import("/assets/js/model-viewer.js?v=20260906-04");
     } else {
       window.dispatchEvent(new Event("resize"));
     }
@@ -218,8 +218,6 @@ function renderVariants(product, checkoutButton, salesEnabled) {
   const variants = Array.isArray(product.variants) ? product.variants : [];
   const configuratorSize = document.querySelector("#configurator-size");
   const pricingNote = document.querySelector("#variant-pricing-note");
-  const variantCollapseToggle = document.querySelector("#variant-collapse-toggle");
-  const variantCollapseCurrent = document.querySelector("#variant-collapse-current");
   const edgeDepthPicker = document.querySelector("#edge-depth-picker");
   const edgeDepthSelects = [
     document.querySelector("#edge-depth-1"),
@@ -350,7 +348,6 @@ function renderVariants(product, checkoutButton, salesEnabled) {
     setText("#product-name", variant.name);
     setText("#product-subtitle", variant.description);
     setText("#product-price", variant.price || product.price);
-    if (variantCollapseCurrent) variantCollapseCurrent.textContent = variant.name;
     renderProductDescription(variant);
     document.title = "DAB";
     selectedBodyColor = variant.defaultBodyColor || "";
@@ -523,7 +520,7 @@ function renderVariants(product, checkoutButton, salesEnabled) {
 
     const name = document.createElement("span");
     name.className = "variant-name";
-    name.textContent = variant.name;
+    name.textContent = variant.description || variant.name;
 
     const price = document.createElement("span");
     price.className = "variant-price";
@@ -531,18 +528,12 @@ function renderVariants(product, checkoutButton, salesEnabled) {
     price.textContent = variant.price || product.price || "";
     if (!salesEnabled) price.setAttribute("aria-label", "Pricing coming soon");
 
-    const description = document.createElement("span");
-    description.className = "variant-description";
-    description.textContent = variant.description;
-
-    copy.append(name, price, description);
+    copy.append(name, price);
     label.append(input, copy);
     options.append(label);
 
     input.addEventListener("change", () => {
       setVariantState(variant);
-      picker.classList.add("is-collapsed");
-      variantCollapseToggle?.setAttribute("aria-expanded", "false");
       window.dispatchEvent(new CustomEvent("dab:model-change", {
         detail: {
           modelUrl: variant.modelUrl,
@@ -566,12 +557,6 @@ function renderVariants(product, checkoutButton, salesEnabled) {
   setVariantState(initialVariant);
   const initialInput = options.querySelector(`input[value="${initialVariant.id}"]`);
   if (initialInput) initialInput.checked = true;
-  picker.classList.toggle("is-collapsed", Boolean(requestedVariantId));
-  variantCollapseToggle?.setAttribute("aria-expanded", requestedVariantId ? "false" : "true");
-  variantCollapseToggle?.addEventListener("click", () => {
-    const collapsed = picker.classList.toggle("is-collapsed");
-    variantCollapseToggle.setAttribute("aria-expanded", String(!collapsed));
-  });
   picker.hidden = false;
 }
 

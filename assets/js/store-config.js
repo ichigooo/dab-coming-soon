@@ -143,11 +143,6 @@ window.DAB_STORE = Object.freeze({
           Object.freeze({
             src: "/assets/images/dab-block-01-pack.jpg?v=20260818-2",
             alt: "Soft Lemon and Charcoal Dab Block 01 resting on rock"
-          }),
-          Object.freeze({
-            src: "/assets/images/dab-block-01-detail.jpg?v=20260818-2",
-            alt: "Soft Lemon and Charcoal Dab Block 01 hanging from a carabiner",
-            objectPosition: "center bottom"
           })
         ])
       })

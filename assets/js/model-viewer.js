@@ -31,10 +31,7 @@ const bodyName = document.querySelector("#body-color-name");
 const accentName = document.querySelector("#accent-color-name");
 const zoomOut = document.querySelector("#zoom-out");
 const zoomIn = document.querySelector("#zoom-in");
-const spinSpeed = document.querySelector("#spin-speed");
 const defaultModelUrl = new URL("../models/dab-block-01.preview.3mf", import.meta.url).href;
-const minimumSpinSpeed = 0.1;
-const maximumSpinSpeed = 100;
 const blockColor = getComputedStyle(document.documentElement)
   .getPropertyValue("--block-color")
   .trim() || "#000000";
@@ -56,7 +53,8 @@ if (stage && canvas) {
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(36, 1, 0.01, 1000);
-  camera.position.set(0, 0, 5.8);
+  const initialDistance = window.matchMedia("(max-width: 820px)").matches ? 2.5 : 5.8;
+  camera.position.set(0, 0, initialDistance);
 
   const controls = new OrbitControls(camera, canvas);
   controls.enableDamping = true;
@@ -65,8 +63,7 @@ if (stage && canvas) {
   controls.touches.TWO = THREE.TOUCH.DOLLY_ROTATE;
   controls.minDistance = 2.5;
   controls.maxDistance = 8;
-  controls.autoRotate = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  controls.autoRotateSpeed = maximumSpinSpeed * 0.005;
+  controls.autoRotate = false;
 
   canvas.addEventListener("touchmove", (event) => {
     if (event.touches.length > 1) event.preventDefault();
@@ -319,6 +316,10 @@ if (stage && canvas) {
     if (model) positionModel(model);
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
+    // Keep the mobile block size consistent as the preview canvas gets shorter.
+    camera.zoom = window.matchMedia("(max-width: 820px)").matches
+      ? THREE.MathUtils.clamp(window.innerHeight * 0.45, 300, 460) / height
+      : 1;
     camera.updateProjectionMatrix();
   }
 
@@ -466,14 +467,17 @@ if (stage && canvas) {
     bodyToggle.setAttribute("aria-expanded", String(!bodyPalette.hidden));
   });
 
+  [bodyToggle, accentToggle].forEach((toggle) => {
+    const row = toggle?.closest(".finish-color");
+    row?.addEventListener("click", (event) => {
+      if (!window.matchMedia("(max-width: 820px)").matches) return;
+      if (event.target.closest("button, .filament-palette")) return;
+      toggle.click();
+    });
+  });
+
   zoomOut?.addEventListener("click", () => zoom(1.18));
   zoomIn?.addEventListener("click", () => zoom(0.84));
-
-  spinSpeed?.addEventListener("input", () => {
-    controls.autoRotate = true;
-    const sliderProgress = Number(spinSpeed.value) / 100;
-    controls.autoRotateSpeed = Math.max(minimumSpinSpeed, maximumSpinSpeed * sliderProgress);
-  });
 
   window.addEventListener("dab:model-change", (event) => {
     const detail = event.detail || {};
