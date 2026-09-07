@@ -1,0 +1,16 @@
+{
+  "name": "DAB Climbing",
+  "short_name": "DAB",
+  "description": "Climbing goods and training tools.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#f5f2ec",
+  "icons": [
+    {
+      "src": "/assets/images/dab-logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

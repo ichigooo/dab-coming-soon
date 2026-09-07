@@ -1,0 +1,9 @@
+.DS_Store
+.git/
+.vercel/
+dist/
+private-models/
+scratch/
+fix_config.js
+resolve.js
+resolve_store_config.js

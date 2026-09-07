@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://www.dabclimbing.com/</loc>
+    <lastmod>2026-09-07</lastmod>
+    <image:image>
+      <image:loc>https://www.dabclimbing.com/assets/images/dab-hero-blocks.jpg</image:loc>
+      <image:title>DAB climbing training blocks</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.dabclimbing.com/buy/block-02/</loc>
+    <lastmod>2026-09-07</lastmod>
+    <image:image>
+      <image:loc>https://www.dabclimbing.com/assets/images/dab-block-02-main.png</image:loc>
+      <image:title>DAB BLOCK 02 ergonomic uneven-edge climbing training block</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.dabclimbing.com/buy/block-01/</loc>
+    <lastmod>2026-09-07</lastmod>
+    <image:image>
+      <image:loc>https://www.dabclimbing.com/assets/images/dab-block-01-main.jpg</image:loc>
+      <image:title>DAB BLOCK 01 flat-edge climbing training block</image:title>
+    </image:image>
+  </url>
+</urlset>

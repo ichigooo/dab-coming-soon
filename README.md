@@ -130,6 +130,19 @@ To smoke-test the configured live checkout links without launching the store, us
 - Signup behavior: `assets/js/main.js`
 - Logo and product image: `assets/images/`
 
+## Search visibility
+
+The production build publishes canonical metadata, social previews, structured
+product data, `robots.txt`, `sitemap.xml`, `llms.txt`, and the web app manifest.
+Product SEO values live in `scripts/build.mjs`; keep their prices and availability
+in sync with `assets/js/store-config.js` whenever the catalog changes.
+
+After deploying a catalog change, submit
+`https://www.dabclimbing.com/sitemap.xml` in Google Search Console and Bing
+Webmaster Tools. The `llms.txt` file is an experimental discovery aid; standard
+crawlability, accurate page copy, and structured data remain the primary SEO and
+AI-search signals.
+
 ## Current design direction
 
 - White background
