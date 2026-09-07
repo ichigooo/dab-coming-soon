@@ -16,13 +16,13 @@ function includePublicAsset(source) {
 
 await rm("dist", { force: true, recursive: true });
 await mkdir("dist/server", { recursive: true });
-await mkdir("dist/.openai", { recursive: true });
+await mkdir("dist/client", { recursive: true });
 
-await cp("index.html", "dist/index.html");
-await cp("buy", "dist/buy", { recursive: true });
+await cp("index.html", "dist/client/index.html");
+await cp("buy", "dist/client/buy", { recursive: true });
 // Publish clean, product-specific URLs while sharing the product template.
-await mkdir("dist/buy/block-01", { recursive: true });
-await mkdir("dist/buy/block-02", { recursive: true });
+await mkdir("dist/client/buy/block-01", { recursive: true });
+await mkdir("dist/client/buy/block-02", { recursive: true });
 
 const productTemplate = await readFile("buy/index.html", "utf8");
 const productPages = [
@@ -101,20 +101,19 @@ for (const product of productPages) {
     .replace('<meta name="robots" content="noindex, follow" />', '<meta name="robots" content="index, follow, max-image-preview:large" />')
     .replace("<title>DAB Climbing | Choose Your Training Block</title>", `<title>${product.seoTitle}</title>`)
     .replace("<!-- PRODUCT_SEO -->", productSeoMarkup(product));
-  await writeFile(`dist/buy/${product.slug}/index.html`, page);
+  await writeFile(`dist/client/buy/${product.slug}/index.html`, page);
 }
-await cp("thank-you", "dist/thank-you", { recursive: true });
+await cp("thank-you", "dist/client/thank-you", { recursive: true });
 // Browser-delivered 3D geometry is always downloadable. Only explicitly
 // approved, display-only models may enter the deploy output.
-await cp("assets", "dist/assets", {
+await cp("assets", "dist/client/assets", {
   recursive: true,
   filter: includePublicAsset
 });
-await cp(".openai/hosting.json", "dist/.openai/hosting.json");
-await cp("robots.txt", "dist/robots.txt");
-await cp("sitemap.xml", "dist/sitemap.xml");
-await cp("llms.txt", "dist/llms.txt");
-await cp("site.webmanifest", "dist/site.webmanifest");
+await cp("robots.txt", "dist/client/robots.txt");
+await cp("sitemap.xml", "dist/client/sitemap.xml");
+await cp("llms.txt", "dist/client/llms.txt");
+await cp("site.webmanifest", "dist/client/site.webmanifest");
 
 await writeFile(
   "dist/server/index.js",

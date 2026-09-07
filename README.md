@@ -94,7 +94,7 @@ The build script uses an explicit allowlist and publishes only files named:
 - `assets/models/dab-block-01.preview.3mf`
 - `assets/models/dab-block-02.preview.3mf`
 
-Run `npm run build` before deployment and verify that `dist/assets/models/`
+Run `npm run build` before deployment and verify that `dist/client/assets/models/`
 contains only those display models. Deploy `dist/`, not the repository root.
 
 If production geometry was previously committed to a remote repository, moving
