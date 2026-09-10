@@ -81,6 +81,24 @@ Rebase regularly when a branch stays open for several days. Conflicts cannot be
 eliminated completely, but keeping branches current and changes focused makes
 them much less likely.
 
+### Production deployment handoff
+
+`dabclimbing.com` is connected to Alan's production project. A deployment from a
+personal Vercel account creates a separate release and does not update the live
+custom domain. Every production change must therefore be handed off through a
+pull request into `alanyeh/dab-coming-soon` on the `main` branch:
+
+1. Run `npm run build` and complete the relevant checks locally.
+2. Push the feature branch to the `origin` fork.
+3. Open a pull request from `ichigooo:<feature-branch>` to
+   `alanyeh/dab-coming-soon:main`.
+4. Merge the approved pull request and deploy from Alan's production project.
+5. Verify the live `dabclimbing.com` pages and crawl endpoints before treating
+   the release as complete.
+
+Do not report a personal Vercel preview or production alias as a deployment to
+`dabclimbing.com`.
+
 ## 3D model privacy
 
 The interactive viewer uses reduced, display-only models from `assets/models/`.
